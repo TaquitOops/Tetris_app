@@ -1,0 +1,9 @@
+{
+  "name": "tetris-game",
+  "private": true,
+  "scripts": {
+    "start": "python3 main.py",
+    "build": "echo 'Python Flet app - No build needed'",
+    "test": "python3 -m py_compile main.py tetris_game.py supabase_client.py"
+  }
+}
