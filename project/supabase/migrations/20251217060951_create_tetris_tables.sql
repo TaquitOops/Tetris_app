@@ -68,14 +68,6 @@ CREATE TABLE IF NOT EXISTS scores (
     ON DELETE CASCADE
 );
 
-"""CREATE TABLE IF NOT EXISTS scores (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  score integer NOT NULL DEFAULT 0,
-  level integer NOT NULL DEFAULT 1,
-  created_at timestamptz DEFAULT now()
-);"""
-
 -- Crear tabla de preguntas
 CREATE TABLE IF NOT EXISTS questions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
