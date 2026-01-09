@@ -15,13 +15,19 @@ CREATE TABLE IF NOT EXISTS profiles (
 -- =====================================================
 -- TABLA SCORES
 -- =====================================================
-CREATE TABLE IF NOT EXISTS scores (
+CREATE TABLE scores (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-  score integer NOT NULL DEFAULT 0,
-  level integer NOT NULL DEFAULT 1,
+  user_id uuid NOT NULL,
+  score integer NOT NULL,
+  level integer NOT NULL,
   created_at timestamptz DEFAULT now()
 );
+
+CREATE POLICY "Users can read own scores"
+ON scores
+FOR SELECT
+TO authenticated
+USING (auth.uid() = user_id);
 
 -- =====================================================
 -- TABLA QUESTIONS
