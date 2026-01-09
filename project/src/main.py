@@ -193,7 +193,7 @@ class TetrisApp:
             )
         )
 
-    def show_leaderboard(self):
+    """def show_leaderboard(self):
         self.page.clean()
 
         try:
@@ -240,7 +240,78 @@ class TetrisApp:
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
+        )"""
+
+    def show_leaderboard(self):
+    self.page.clean()
+
+    try:
+        response = (
+            supabase
+            .table("scores")
+            .select(
+                "score, level, created_at, profiles(username)"
+            )
+            .order("score", desc=True)
+            .limit(10)
+            .execute()
         )
+
+        leaderboard_items = []
+
+        for idx, record in enumerate(response.data, 1):
+            username = record["profiles"]["username"]
+            score = record["score"]
+            level = record["level"]
+
+            leaderboard_items.append(
+                ft.Container(
+                    content=ft.Row(
+                        [
+                            ft.Text(f"{idx}.", size=18, weight=ft.FontWeight.BOLD, width=40),
+                            ft.Text(username, size=18, width=150),
+                            ft.Text(f"Nivel: {level}", size=16, width=100),
+                            ft.Text(f"{score} pts", size=16, weight=ft.FontWeight.BOLD),
+                        ],
+                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                    ),
+                    padding=10,
+                    border=ft.border.all(1, ft.Colors.BLUE_700),
+                    border_radius=10,
+                )
+            )
+
+        if not leaderboard_items:
+            leaderboard_items.append(
+                ft.Text("No hay puntajes registrados aún", size=18)
+            )
+
+    except Exception as ex:
+        leaderboard_items = [
+            ft.Text(f"Error al cargar leaderboard:\n{str(ex)}", color=ft.Colors.RED)
+        ]
+
+    def back_click(e):
+        self.show_menu()
+
+    self.page.add(
+        ft.Column(
+            [
+                ft.Text("🏆 TOP GLOBAL", size=40, weight=ft.FontWeight.BOLD),
+                ft.Container(height=20),
+                ft.Column(
+                    leaderboard_items,
+                    scroll=ft.ScrollMode.AUTO,
+                    height=400,
+                    width=450,
+                ),
+                ft.Container(height=20),
+                ft.ElevatedButton("Volver al Menú", on_click=back_click, width=300),
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+    )
+
 
     def start_game(self):
         self.game = TetrisGame()
