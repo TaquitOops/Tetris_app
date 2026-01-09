@@ -59,29 +59,6 @@ class TetrisApp:
                 error_text.value = f"Error: {str(ex)}"
                 self.page.update()
 
-
-        """def login_click(e):
-            try:
-                response = supabase.auth.sign_in_with_password({
-                    "email": email_field.value,
-                    "password": password_field.value
-                })
-
-                self.user = response.user
-
-                profile_response = supabase.table("profiles").select("*").eq("id", self.user.id).maybeSingle().execute()
-
-                if profile_response.data:
-                    self.username = profile_response.data["username"]
-                    self.show_menu()
-                else:
-                    error_text.value = "Error: Perfil no encontrado"
-                    self.page.update()
-
-            except Exception as ex:
-                error_text.value = f"Error: {str(ex)}"
-                self.page.update()"""
-
         def go_to_register(e):
             self.show_register()
 
@@ -134,44 +111,13 @@ class TetrisApp:
                 error_text.value = f"Error: {str(ex)}"
                 self.page.update()
 
-
-        """def register_click(e):
-            try:
-                response = supabase.auth.sign_up({
-                    "email": email_field.value,
-                    "password": password_field.value
-                })
-
-                if response.user:
-                    supabase.table("profiles").insert({
-                        "id": response.user.id,
-                        "username": username_field.value
-                    }).execute()
-
-                    success_text.value = "¡Registro exitoso! Iniciando sesión..."
-                    error_text.value = ""
-                    self.page.update()
-
-                    self.user = response.user
-                    self.username = username_field.value
-
-                    self.page.run_task(lambda: asyncio.sleep(1))
-                    self.show_menu()
-                else:
-                    error_text.value = "Error en el registro"
-                    self.page.update()
-
-            except Exception as ex:
-                error_text.value = f"Error: {str(ex)}"
-                self.page.update() """
-
         def go_to_login(e):
             self.show_login()
 
         self.page.add(
             ft.Column(
                 [
-                    ft.Text("🎮 TETRIS GAME", size=40, weight=ft.FontWeight.BOLD),
+                    ft.Text(" TETRIS GAME", size=40, weight=ft.FontWeight.BOLD),
                     ft.Text("Registro", size=24),
                     username_field,
                     email_field,
@@ -209,10 +155,10 @@ class TetrisApp:
                         ],
                         alignment=ft.MainAxisAlignment.END,
                     ),
-                    ft.Text("🎮 TETRIS GAME", size=50, weight=ft.FontWeight.BOLD),
+                    ft.Text(" TETRIS GAME", size=50, weight=ft.FontWeight.BOLD),
                     ft.Container(height=20),
                     ft.ElevatedButton(
-                        "🎮 JUGAR",
+                        " JUGAR",
                         on_click=play_click,
                         width=300,
                         height=60,
@@ -222,7 +168,7 @@ class TetrisApp:
                         ),
                     ),
                     ft.ElevatedButton(
-                        "🏆 TOP GLOBAL",
+                        " TOP GLOBAL",
                         on_click=leaderboard_click,
                         width=300,
                         height=60,
@@ -232,7 +178,7 @@ class TetrisApp:
                         ),
                     ),
                     ft.ElevatedButton(
-                        "🚪 SALIR",
+                        " SALIR",
                         on_click=logout_click,
                         width=300,
                         height=60,
@@ -285,7 +231,7 @@ class TetrisApp:
         self.page.add(
             ft.Column(
                 [
-                    ft.Text("🏆 TOP GLOBAL", size=40, weight=ft.FontWeight.BOLD),
+                    ft.Text(" TOP GLOBAL", size=40, weight=ft.FontWeight.BOLD),
                     ft.Container(height=20),
                     ft.Column(leaderboard_items, scroll=ft.ScrollMode.AUTO, height=400),
                     ft.Container(height=20),
@@ -353,45 +299,6 @@ class TetrisApp:
             score_text.value = f"Puntuación: {self.game.score}"
             level_text.value = f"Nivel: {self.game.level}"
             self.page.update()
-
-        """def update_board():
-            canvas = ft.canvas.Canvas(
-                [
-                    ft.canvas.Rect(
-                        0, 0, BOARD_WIDTH * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE,
-                        paint=ft.Paint(color=ft.Colors.BLACK)
-                    ),
-                ],
-                width=BOARD_WIDTH * CELL_SIZE,
-                height=BOARD_HEIGHT * CELL_SIZE,
-            )
-
-            for y in range(BOARD_HEIGHT):
-                for x in range(BOARD_WIDTH):
-                    if self.game.board[y][x]:
-                        canvas.shapes.append(
-                            ft.canvas.Rect(
-                                x * CELL_SIZE, y * CELL_SIZE,
-                                CELL_SIZE - 1, CELL_SIZE - 1,
-                                paint=ft.Paint(color=self.game.board[y][x])
-                            )
-                        )
-
-            if self.game.current_piece:
-                for x, y in self.game.current_piece.get_cells():
-                    if y >= 0:
-                        canvas.shapes.append(
-                            ft.canvas.Rect(
-                                x * CELL_SIZE, y * CELL_SIZE,
-                                CELL_SIZE - 1, CELL_SIZE - 1,
-                                paint=ft.Paint(color=self.game.current_piece.color)
-                            )
-                        )
-
-            board_container.content = canvas
-            score_text.value = f"Puntuación: {self.game.score}"
-            level_text.value = f"Nivel: {self.game.level}"
-            self.page.update()"""
 
         def move_left(e):
             if self.game and not self.game.game_over:
@@ -531,29 +438,6 @@ class TetrisApp:
 
             return handler
 
-
-
-        """def check_answer(answer):
-            def handler(e):
-                if answer == self.current_question["correct_answer"]:
-                    result_text.value = "¡Correcto! Puedes seguir jugando"
-                    result_text.color = ft.Colors.GREEN
-                    self.page.update()
-
-                    self.game.reduce_score()
-                    self.game.reset_board()
-
-                    self.page.run_task(lambda: asyncio.sleep(2))
-                    self.start_game()
-                else:
-                    result_text.value = "Incorrecto. Juego Terminado"
-                    result_text.color = ft.Colors.RED
-                    self.page.update()
-
-                    self.page.run_task(lambda: asyncio.sleep(2))
-                    self.show_game_over(False)
-            return handler"""
-
         self.page.add(
             ft.Column(
                 [
@@ -626,7 +510,6 @@ class TetrisApp:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
         )
-
 
 def main(page: ft.Page):
     TetrisApp(page)
