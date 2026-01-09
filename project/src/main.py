@@ -517,7 +517,8 @@ def main(page: ft.Page):
 ft.app(
     target=main,
     view=ft.AppView.WEB_BROWSER,
-    port=8080
+    host="0.0.0.0",
+    port=int(os.environ.get("PORT", 8080)),
 )
 
 if __name__ == "__main__":
