@@ -514,6 +514,11 @@ class TetrisApp:
 def main(page: ft.Page):
     TetrisApp(page)
 
+ft.app(
+    target=main,
+    view=ft.WEB_BROWSER,
+    port=8080
+)
 
 if __name__ == "__main__":
     ft.app(target=main)
