@@ -169,7 +169,7 @@ class TetrisApp:
                         ),
                     ),
                     ft.ElevatedButton(
-                        " TOP GLOBAL",
+                        " PARTIDAS",
                         on_click=leaderboard_click,
                         width=300,
                         height=60,
@@ -193,38 +193,47 @@ class TetrisApp:
             )
         )
 
-    """def show_leaderboard(self):
+    def show_leaderboard(self):
         self.page.clean()
 
         try:
-            response = supabase.table("scores").select(
-                "score, level, created_at, profiles!inner(username)"
-            ).order("score", desc=True).limit(10).execute()
+            response = (
+                supabase
+                .table("scores")
+                .select("score, level, created_at")
+                .eq("user_id", self.user.id)
+                .order("score", desc=True)
+                .limit(10)
+                .execute()
+            )
 
             leaderboard_items = []
-            for idx, record in enumerate(response.data, 1):
-                username = record["profiles"]["username"]
-                score = record["score"]
-                level = record["level"]
 
+            if not response.data:
                 leaderboard_items.append(
-                    ft.Container(
-                        content=ft.Row(
-                            [
-                                ft.Text(f"{idx}.", size=18, weight=ft.FontWeight.BOLD, width=40),
-                                ft.Text(f"{username}", size=18, width=150),
-                                ft.Text(f"Nivel: {level}", size=16, width=100),
-                                ft.Text(f"{score} pts", size=16, weight=ft.FontWeight.BOLD),
-                            ],
-                        ),
-                        padding=10,
-                        border=ft.border.all(1, ft.Colors.BLUE_700),
-                        border_radius=10,
-                    )
+                    ft.Text("Aún no tienes partidas guardadas", size=18)
                 )
+            else:
+                for idx, record in enumerate(response.data, 1):
+                    leaderboard_items.append(
+                        ft.Container(
+                            content=ft.Row(
+                                [
+                                    ft.Text(f"{idx}.", size=18, weight=ft.FontWeight.BOLD, width=40),
+                                    ft.Text(f"{record['score']} pts", size=18, width=120),
+                                    ft.Text(f"Nivel {record['level']}", size=16),
+                                ],
+                            ),
+                            padding=10,
+                            border=ft.border.all(1, ft.Colors.BLUE_700),
+                            border_radius=10,
+                        )
+                    )
 
         except Exception as ex:
-            leaderboard_items = [ft.Text(f"Error: {str(ex)}", color=ft.Colors.RED)]
+            leaderboard_items = [
+                ft.Text(f"Error al cargar partidas: {str(ex)}", color=ft.Colors.RED)
+            ]
 
         def back_click(e):
             self.show_menu()
@@ -232,7 +241,7 @@ class TetrisApp:
         self.page.add(
             ft.Column(
                 [
-                    ft.Text(" TOP GLOBAL", size=40, weight=ft.FontWeight.BOLD),
+                    ft.Text("MIS MEJORES PARTIDAS", size=36, weight=ft.FontWeight.BOLD),
                     ft.Container(height=20),
                     ft.Column(leaderboard_items, scroll=ft.ScrollMode.AUTO, height=400),
                     ft.Container(height=20),
@@ -240,77 +249,7 @@ class TetrisApp:
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
-        )"""
-
-    def show_leaderboard(self):
-    self.page.clean()
-
-    try:
-        response = (
-            supabase
-            .table("scores")
-            .select(
-                "score, level, created_at, profiles(username)"
-            )
-            .order("score", desc=True)
-            .limit(10)
-            .execute()
         )
-
-        leaderboard_items = []
-
-        for idx, record in enumerate(response.data, 1):
-            username = record["profiles"]["username"]
-            score = record["score"]
-            level = record["level"]
-
-            leaderboard_items.append(
-                ft.Container(
-                    content=ft.Row(
-                        [
-                            ft.Text(f"{idx}.", size=18, weight=ft.FontWeight.BOLD, width=40),
-                            ft.Text(username, size=18, width=150),
-                            ft.Text(f"Nivel: {level}", size=16, width=100),
-                            ft.Text(f"{score} pts", size=16, weight=ft.FontWeight.BOLD),
-                        ],
-                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                    ),
-                    padding=10,
-                    border=ft.border.all(1, ft.Colors.BLUE_700),
-                    border_radius=10,
-                )
-            )
-
-        if not leaderboard_items:
-            leaderboard_items.append(
-                ft.Text("No hay puntajes registrados aún", size=18)
-            )
-
-    except Exception as ex:
-        leaderboard_items = [
-            ft.Text(f"Error al cargar leaderboard:\n{str(ex)}", color=ft.Colors.RED)
-        ]
-
-    def back_click(e):
-        self.show_menu()
-
-    self.page.add(
-        ft.Column(
-            [
-                ft.Text("🏆 TOP GLOBAL", size=40, weight=ft.FontWeight.BOLD),
-                ft.Container(height=20),
-                ft.Column(
-                    leaderboard_items,
-                    scroll=ft.ScrollMode.AUTO,
-                    height=400,
-                    width=450,
-                ),
-                ft.Container(height=20),
-                ft.ElevatedButton("Volver al Menú", on_click=back_click, width=300),
-            ],
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        )
-    )
 
 
     def start_game(self):
@@ -403,7 +342,7 @@ class TetrisApp:
 
         async def game_loop():
             while self.game_loop_running and not self.game.game_over:
-                await asyncio.sleep(max(0.5 - (self.game.level - 1) * 0.05, 0.1))
+                await asyncio.sleep(max(0.6 - self.game.level * 0.08, 0.08))
                 if self.game and not self.game.game_over:
                     self.game.drop_piece()
                     update_board()
@@ -446,7 +385,7 @@ class TetrisApp:
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                     ),
-                    ft.ElevatedButton("⏸PAUSAR", on_click=pause_game, width=250),
+                    ft.ElevatedButton("MENU", on_click=pause_game, width=250),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
@@ -460,7 +399,7 @@ class TetrisApp:
 
     async def continue_after_wrong(self):
         await asyncio.sleep(2)
-        self.show_game_over(False)
+        self.show_game_over(True)
 
     def show_trivia_question(self):
         self.page.clean()
@@ -472,7 +411,7 @@ class TetrisApp:
             if questions:
                 self.current_question = random.choice(questions)
             else:
-                self.show_game_over(False)
+                self.show_game_over(True)
                 return
 
         except Exception as ex:
@@ -582,7 +521,7 @@ class TetrisApp:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
         )
-
+        
 def main(page: ft.Page):
     TetrisApp(page)
 
