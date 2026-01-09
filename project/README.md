@@ -6,7 +6,7 @@ Un juego de Tetris completo con sistema de autenticación, preguntas de cultura 
 - Juego de Tetris: Con controles táctiles para dispositivos móviles
 - Preguntas de Trivia: Al llegar a Game Over, responde preguntas de cultura general para continuar
 - Sistema de Niveles: El juego se vuelve más difícil con cada nivel
-- Ranking Global: Tabla de clasificación con los mejores puntajes
+- Ranking: Tabla de clasificación con las mejores partidas del jugador
 - Puntajes Persistentes: Los puntajes se guardan en la base de datos
 
 # Cómo Jugar
